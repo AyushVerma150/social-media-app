@@ -29,12 +29,27 @@ public class UserDaoService {
     }
 
     public User findById(Integer id) {
-        return users.stream().filter(user -> Objects.equals(user.getId(), id)).findFirst().orElse(null);
+        return users.stream( ).filter( user -> Objects.equals( user.getId( ), id ) ).findFirst( ).orElse( null );
     }
 
     public User create(User user) {
-        user.setId(users.size() + 1);
-        users.add(user);
+        user.setId( users.size( ) + 1 );
+        users.add( user );
         return user;
     }
+
+
+    public User deleteById(Integer id) {
+        try {
+            System.out.println( id );
+            User userFound = this.findById( id );
+            if ( userFound == null ) throw null;
+            users.removeIf( user -> user.getId( ).equals( id ) );
+            return userFound;
+        } catch ( Exception err ) {
+            System.out.println( err.getMessage( ) );
+        }
+        return null;
+    }
+
 }

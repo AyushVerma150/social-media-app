@@ -1,5 +1,6 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,16 +27,22 @@ public class UserController {
     public User findById(@PathVariable Integer id) {
         User user = userDaoService.findById(id);
         if (user == null) {
-            throw new UserNotFoundException("id : " + id);
+            throw new UserNotFoundException( "User you are trying to access is deleted or removed." );
         }
         return user;
     }
 
     // Create a New user
     @PostMapping("users")
-    public ResponseEntity<User> create(@RequestBody User user) {
-        User savedUser = userDaoService.create(user);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<User> create(@Valid @RequestBody User user) {
+        User savedUser = userDaoService.create( user );
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest( ).path( "/{id}" ).buildAndExpand( savedUser.getId( ) ).toUri( );
+        return ResponseEntity.created( location ).build( );
+    }
+
+
+    @DeleteMapping("users/{id}")
+    public User deleteUser(@PathVariable Integer id) {
+        return userDaoService.deleteById( id );
     }
 }
